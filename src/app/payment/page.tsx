@@ -36,15 +36,17 @@ export default function Payment() {
     run(temp);
   }, [filter]);
   return (
-    <div className={`px-10 py-6 flex flex-col gap-6`}>
+    <div className={`px-10 py-10 flex flex-col gap-6`}>
       {/* Header */}
-      <div className={`flex items-center justify-between`}>
+      <div
+        className={`flex flex-col md:flex-row items-start md:items-center gap-6 justify-between`}
+      >
         <div>
           <h1 className={`text-3xl font-bold text-primaryText`}>Payment</h1>
           <p className={`mt-2 text-secondaryText`}>List of all payments</p>
         </div>
-        <Link href={`/payment/create`} className={``}>
-          <Button className={`font-medium gap-2`}>
+        <Link href={`/payment/create`} className={`w-full md:w-fit`}>
+          <Button className={`font-medium gap-2 w-full justify-center`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -217,7 +219,7 @@ export default function Payment() {
                     >
                       <div className={`flex items-center gap-4`}>
                         <div
-                          className={`w-11 h-11 text-xl bg-black text-white flex items-center justify-center rounded-[100%]`}
+                          className={`w-11 h-11 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
                         >
                           {" "}
                           JJ

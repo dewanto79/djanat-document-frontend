@@ -10,6 +10,7 @@ import {
 import { useRequest } from "ahooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Button from "../components/Button";
 
 export default function Student() {
   const [filter, setFilter] = useState<GetStudentListParams>({
@@ -37,32 +38,33 @@ export default function Student() {
   }, [filter]);
 
   return (
-    <div className={`flex flex-col gap-6 p-4 md:px-10 md:py-6`}>
+    <div className={`flex flex-col gap-6 p-4 md:px-10 md:py-10`}>
       {/* Headers */}
-      <div className={`flex items-center justify-between`}>
+      <div
+        className={`flex flex-col gap-6 md:flex-row items-start md:items-center justify-between`}
+      >
         <div>
           <h1 className={`text-3xl font-bold`}>Student</h1>
           <p className={`mt-2 text-gray-400`}>List of all students</p>
         </div>
-        <Link
-          href={`/student/create`}
-          className={`px-3 py-2 flex items-center bg-black text-white rounded-lg gap-2`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-          Create Student
+        <Link href={`/payment/create`} className={`w-full md:w-fit`}>
+          <Button className={`font-medium gap-2 w-full justify-center`}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              className="size-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Create Student
+          </Button>
         </Link>
       </div>
 
@@ -221,7 +223,7 @@ export default function Student() {
                     >
                       <div className={`flex items-center gap-4`}>
                         <div
-                          className={`w-11 h-11 text-xl bg-black text-white flex items-center justify-center rounded-[100%]`}
+                          className={`w-11 h-11 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
                         >
                           {" "}
                           JJ

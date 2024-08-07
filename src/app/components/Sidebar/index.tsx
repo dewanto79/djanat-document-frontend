@@ -81,50 +81,99 @@ export default function Sidebar({ children, className }: SideBarProps) {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className={`bg-bgPrimary text-primaryText h-full w-[280px]  px-5 py-6 z-50`}
+          className={`bg-bgPrimary text-primaryText h-full w-[280px]  px-5 py-6 z-50 flex flex-col justify-between`}
         >
-          <div className={`flex justify-between`}>
-            <div className={`flex items-center`}>
-              <Image
-                className={`w-20`}
-                alt={``}
-                src={`/logo.png`}
-                width={300}
-                height={300}
-              />
-            </div>
-            <button
-              onClick={() => {
-                setSidebar(false);
-              }}
-              className={`md:hidden `}
-            >
-              <ArrowLeftIcon className={`size-6 `} />
-            </button>
-          </div>
-          <div className={`mt-4 md:mt-4 px-3`}>Menu</div>
-          <div className={`flex flex-col  mt-3`}>
-            {listMenu.map((rows, index) => (
-              <Link
-                key={index}
-                className={`flex items-center gap-4   px-3 py-3 ${
-                  path === rows.url
-                    ? "bg-yellow-100 bg-opacity-50  text-[#d58b0a]"
-                    : "hover:bg-gray-500 hover:bg-opacity-5"
-                } transition-colors duration-200`}
-                href={rows.url}
+          <div className={``}>
+            <div className={`flex justify-between`}>
+              <div className={`flex items-center`}>
+                <Image
+                  className={`w-20`}
+                  alt={``}
+                  src={`/logo.png`}
+                  width={300}
+                  height={300}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSidebar(false);
+                }}
+                className={`md:hidden `}
               >
-                {rows.icon}
-                {rows.name}
-              </Link>
-            ))}
+                <ArrowLeftIcon className={`size-6 `} />
+              </button>
+            </div>
+            <div className={`px-3 mt-4 md:mt-6 bg-primary py-3  rounded-lg`}>
+              <div
+                ref={ref}
+                onClick={() => {
+                  setMenu(!menu);
+                }}
+                className={` relative flex items-center justify-start gap-2 cursor-pointer`}
+              >
+                <div
+                  className={`w-11 h-11 rounded-full bg-slate-900 text-white  text-2xl flex items-center justify-center`}
+                >
+                  JJ
+                </div>
+                <div className={`font-montserrat text-start `}>
+                  <div className={`font-semibold text-base text-primaryText`}>
+                    Jerrie Jayadi
+                  </div>
+                  <div className={`text-xs text-primaryText`}>admin</div>
+                </div>
+              </div>
+            </div>
+            <div className={`mt-4 md:mt-6 px-3`}>Menu</div>
+            <div className={`flex flex-col  mt-3`}>
+              {listMenu.map((rows, index) => (
+                <Link
+                  onClick={() => {
+                    setSidebar(false);
+                  }}
+                  key={index}
+                  className={`flex items-center gap-4   px-3 py-3 ${
+                    path === rows.url
+                      ? "bg-yellow-100 bg-opacity-50  text-[#d58b0a]"
+                      : "hover:bg-gray-500 hover:bg-opacity-5"
+                  } transition-colors duration-200`}
+                  href={rows.url}
+                >
+                  {rows.icon}
+                  {rows.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div
+            ref={ref}
+            onClick={() => {
+              handleLogout();
+            }}
+            className={` relative md:flex items-center justify-start gap-2 cursor-pointer p-3 font-semibold text-warning hover:opacity-80  hidden`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="size-5 text-warning"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+              />
+            </svg>
+            Logout
           </div>
         </div>
       </div>
       <div className={`w-full`}>
         {/* Navbar */}
         <div
-          className={`sticky top-0 flex gap-4 justify-between w-full bg-bgPrimary  px-5 py-3 md:py-5 z-40`}
+          className={`sticky top-0 flex gap-4 justify-between w-full bg-bgPrimary  px-5 py-3 md:py-5 z-40 md:hidden`}
         >
           <button
             onClick={() => {
@@ -134,16 +183,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
           >
             <Bars3Icon className={`text-primaryText size-6 shrink-0`} />
           </button>
-          <div
-            className={`px-3 py-2 max-w-[500px] rounded-lg border border-gray-300 w-full items-center gap-3 flex`}
-          >
-            <MagnifyingGlassIcon className={`text-gray-500 size-5 shrink-0`} />
-            <input
-              placeholder={`Search`}
-              type={`text`}
-              className={`w-full focus:outline-none`}
-            />
-          </div>
+          <div />
           <div
             ref={ref}
             onClick={() => {

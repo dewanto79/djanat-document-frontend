@@ -28,7 +28,7 @@ export default function FeedbackModals({
       {actionText && (
         <div className="w-full ">
           <button
-            className={`w-full bg-black text-white rounded-lg px-4 py-3`}
+            className={`w-full bg-primaryText text-white rounded-lg px-4 py-3`}
             onClick={onAction}
           >
             {actionText}

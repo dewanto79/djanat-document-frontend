@@ -111,6 +111,8 @@ export default function CreatePayment() {
                 </h2>
                 <div className={`relative md:col-span-2 mt-3 `}>
                   <Input
+                    onFocus={()=>{setShow(true)}}
+                    onBlur={()=>{setShow(false)}}
                     onChange={(e) => {
                       setSearch(e.target.value);
                       setManualLoading(true);

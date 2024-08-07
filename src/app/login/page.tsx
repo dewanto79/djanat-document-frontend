@@ -110,7 +110,7 @@ export default function Login() {
             </button>
           </div>
           <button
-            className={`mt-5 rounded-lg px-4 py-3 w-full bg-black text-white`}
+            className={`mt-5 rounded-lg px-4 py-3 w-full bg-primaryText text-white`}
           >
             Login
           </button>

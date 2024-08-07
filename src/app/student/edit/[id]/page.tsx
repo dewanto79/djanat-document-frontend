@@ -190,7 +190,7 @@ export default function EditStudent({ params }: { params: { id: string } }) {
             <button
               type={`submit`}
               disabled={loading}
-              className={`px-5 py-2 bg-black text-white rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
+              className={`px-5 py-2 bg-primaryText text-white rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
             >
               Edit Data
             </button>
