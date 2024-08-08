@@ -5,7 +5,7 @@ import { localStorageMixins } from "@/utils/localStorage.mixins";
 import { useRequest } from "ahooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Login() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function Login() {
     password: "",
   });
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
-  const { runAsync } = useRequest(PostLogin, { manual: true });
+  const { runAsync, error, loading } = useRequest(PostLogin, { manual: true });
   const handleSubmit = () => {
     runAsync(loginForm).then((res) => {
       localStorageMixins.set("access_token", res.result.access_token);
@@ -22,13 +22,16 @@ export default function Login() {
       router.push(`/`);
     });
   };
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
   return (
     <div
-      className={`w-screen h-screen flex items-center justify-center bg-white p-4 md:p-40`}
+      className={`w-screen h-screen flex items-center justify-center gap-10 bg-white p-4 md:p-40`}
     >
       <div className={`md:w-[50%] hidden md:block`}>
         <Image
-          className={`w-96 h-96`}
+          className={`w-full max-w-96 object-cover`}
           alt={``}
           src={`/6491439.jpg`}
           width={1080}
@@ -45,6 +48,8 @@ export default function Login() {
         >
           <h1 className={`text-4xl font-bold mb-5`}>Login</h1>
           <input
+            required
+            disabled={loading}
             type={`text`}
             value={loginForm.email}
             onChange={(e) => {
@@ -57,6 +62,8 @@ export default function Login() {
             className={`flex items-center justify-between border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:border-gray-500`}
           >
             <input
+              required
+              disabled={loading}
               type={passwordVisibility ? "text" : "password"}
               value={loginForm.password}
               onChange={(e) => {
@@ -109,8 +116,12 @@ export default function Login() {
               )}
             </button>
           </div>
+          {error && (
+            <p className={`text-warning mt-4`}>Invalid Email/Password</p>
+          )}
           <button
-            className={`mt-5 rounded-lg px-4 py-3 w-full bg-primaryText text-white`}
+            disabled={loading}
+            className={`mt-5 rounded-lg px-4 py-3 w-full bg-primaryText text-white disabled:bg-secondaryText`}
           >
             Login
           </button>

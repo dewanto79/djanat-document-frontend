@@ -47,7 +47,7 @@ export default function Student() {
           <h1 className={`text-3xl font-bold`}>Student</h1>
           <p className={`mt-2 text-gray-400`}>List of all students</p>
         </div>
-        <Link href={`/payment/create`} className={`w-full md:w-fit`}>
+        <Link href={`/student/create`} className={`w-full md:w-fit`}>
           <Button className={`font-medium gap-2 w-full justify-center`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

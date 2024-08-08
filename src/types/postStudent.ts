@@ -9,6 +9,7 @@ export interface PostStudentRequestProps {
   birthdate: string;
   grade: string;
   startdate: string;
+  gender: string;
 }
 
 export interface PostStudentResponseProps {

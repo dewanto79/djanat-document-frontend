@@ -24,7 +24,7 @@ export default function CreatePayment() {
   const [form, setForm] = useState<PostPaymentPayload>({
     amount: 0,
     month: "",
-    year: "",
+    year: "2024",
     paidDate: "",
     status: "PAID",
     studentId: "",
@@ -86,9 +86,11 @@ export default function CreatePayment() {
       });
   }, [searchDelay]);
 
-  useEffect(() => {}, [selectedData]);
+  useEffect(() => {
+    console.log(selectedData);
+  }, [selectedData]);
   return (
-    <main className={`p-10 pt-6 pb-40 md:pb-0`}>
+    <main className={`p-10 pt-10 pb-40 md:pb-0`}>
       <div className={``}>
         <h1 className={`text-3xl font-bold`}>Create Payment</h1>
         <p className={`mt-2 text-gray-400`}>Create payment data of a student</p>
@@ -111,8 +113,9 @@ export default function CreatePayment() {
                 </h2>
                 <div className={`relative md:col-span-2 mt-3 `}>
                   <Input
-                    onFocus={()=>{setShow(true)}}
-                    onBlur={()=>{setShow(false)}}
+                    onFocus={() => {
+                      setShow(true);
+                    }}
                     onChange={(e) => {
                       setSearch(e.target.value);
                       setManualLoading(true);
@@ -141,7 +144,7 @@ export default function CreatePayment() {
                       >
                         {data?.result.items.map((rows, index) => (
                           <div
-                            onClick={() => {
+                            onClick={(e) => {
                               setSelectedData(rows);
                               setForm((prev) => ({
                                 ...prev,
@@ -191,7 +194,7 @@ export default function CreatePayment() {
                             {selectedData?.grade ?? ""}
                           </p>
                         </div>
-                        <div>
+                        {/* <div>
                           <p className={`text-base text-primaryText mb-1`}>
                             Parents
                           </p>
@@ -210,7 +213,7 @@ export default function CreatePayment() {
                           >
                             {selectedData?.phone ?? ""}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </>
                   ) : (
@@ -267,6 +270,7 @@ export default function CreatePayment() {
                     placeholder={`2024`}
                     label={`Year`}
                     type={`number`}
+                    value={form.year}
                   />
                   <Input
                     onChange={(e) => {
@@ -291,8 +295,10 @@ export default function CreatePayment() {
                     max={new Date().toISOString().split("T")[0]}
                   />
                 </div>
-              ):(
-                <p className={`mt-6 text-center text-secondaryText`}>Select a student data first</p>
+              ) : (
+                <p className={`mt-6 text-center text-secondaryText`}>
+                  Select a student data first
+                </p>
               )}
             </div>
           </div>

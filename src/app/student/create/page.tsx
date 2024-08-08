@@ -21,6 +21,7 @@ export default function CreateStudent() {
     grade: "",
     parents: "",
     phone: "",
+    gender: "",
   });
 
   const [modalSubmit, setModalSubmit] = useState<boolean>(false);
@@ -93,6 +94,21 @@ export default function CreateStudent() {
             label={`Grade`}
             type={`number`}
           />
+          <div className={`flex flex-col gap-2`}>
+            <label>Gender</label>
+            <select
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, gender: e.target.value }));
+              }}
+              className={`px-4 py-2 w-full rounded-md  border-2 border-secondaryText`}
+            >
+              <option value={``} hidden selected disabled>
+                Select Gender
+              </option>
+              <option value={`L`}>Laki-Laki</option>
+              <option value={`P`}>Perempuan</option>
+            </select>
+          </div>
           <Input
             required
             disabled={loading}

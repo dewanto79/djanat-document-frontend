@@ -1,3 +1,4 @@
+import { getInitialFromName } from "@/utils";
 import { localStorageMixins } from "@/utils/localStorage.mixins";
 import {
   ArrowDownIcon,
@@ -25,6 +26,7 @@ interface SideBarProps {
 export default function Sidebar({ children, className }: SideBarProps) {
   const [menu, setMenu] = useState<boolean>(false);
   const [sidebar, setSidebar] = useState<boolean>(false);
+  const [profile, setProfile] = useState<any>();
   const ref = useRef<any>(null);
   const path = usePathname();
 
@@ -67,6 +69,10 @@ export default function Sidebar({ children, className }: SideBarProps) {
     localStorageMixins.remove("access_token");
     window.open("/");
   };
+
+  useEffect(() => {
+    setProfile(JSON.parse(localStorageMixins.get(`profile`)!));
+  }, []);
   return (
     <div className={`flex w-full z-50`}>
       <div
@@ -85,9 +91,9 @@ export default function Sidebar({ children, className }: SideBarProps) {
         >
           <div className={``}>
             <div className={`flex justify-between`}>
-              <div className={`flex items-center`}>
+              <div className={`flex items-center justify-center w-full`}>
                 <Image
-                  className={`w-20`}
+                  className={`w-20 md:w-32`}
                   alt={``}
                   src={`/logo.png`}
                   width={300}
@@ -114,13 +120,15 @@ export default function Sidebar({ children, className }: SideBarProps) {
                 <div
                   className={`w-11 h-11 rounded-full bg-slate-900 text-white  text-2xl flex items-center justify-center`}
                 >
-                  JJ
+                  {getInitialFromName(profile?.name ?? "")}
                 </div>
                 <div className={`font-montserrat text-start `}>
                   <div className={`font-semibold text-base text-primaryText`}>
-                    Jerrie Jayadi
+                    {profile?.name ?? ""}
                   </div>
-                  <div className={`text-xs text-primaryText`}>admin</div>
+                  <div className={`text-xs text-primaryText`}>
+                    {profile?.roles[0] ?? ""}
+                  </div>
                 </div>
               </div>
             </div>
@@ -192,8 +200,10 @@ export default function Sidebar({ children, className }: SideBarProps) {
             className={` relative flex items-center justify-end gap-2 cursor-pointer`}
           >
             <div className={`font-montserrat text-end hidden md:block`}>
-              <div className={`font-medium text-sm`}>Jerrie Jayadi</div>
-              <div className={`text-xs text-gray-500`}>admin</div>
+              <div className={`font-medium text-sm`}>{profile?.name ?? ""}</div>
+              <div className={`text-xs text-gray-500`}>
+                {profile?.roles[0] ?? ""}
+              </div>
             </div>
             <div
               className={`w-11 h-11 rounded-full bg-slate-900 text-white  text-2xl flex items-center justify-center`}
