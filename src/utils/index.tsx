@@ -72,6 +72,7 @@ export const translateColor = (status: EStudentStatus | EPaymentStatus) => {
     case EPaymentStatus.PAID:
       return EColor.SUCCESS;
     case EPaymentStatus.TRANSFER:
+      return EColor.WARNING;
     case EStudentStatus.INACTIVE:
       return EColor.ERROR;
     default:
