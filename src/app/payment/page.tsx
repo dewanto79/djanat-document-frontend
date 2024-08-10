@@ -20,12 +20,19 @@ import {
   GetPaymentParams,
   PaymentListProps,
 } from "@/types/payment/getPaymentList";
-import { currencyFormat, handleNumberInput, numberFormat } from "@/utils";
+import {
+  currencyFormat,
+  getInitialFromName,
+  handleNumberInput,
+  numberFormat,
+  translateColor,
+} from "@/utils";
 import { TrashIcon } from "@heroicons/react/20/solid";
 import { Month } from "@/types/payment/postPayment";
 import Input from "../components/Input";
 import FeedbackModals from "../components/FeedbackModals";
 import ConfirmationModals from "../components/ConfirmationModals";
+import Chip from "../components/Chip";
 
 export default function Payment() {
   const [filter, setFilter] = useState<GetPaymentParams>({
@@ -67,7 +74,7 @@ export default function Payment() {
     run(temp);
   }, [filter]);
   return (
-    <div className={`px-10 py-10 flex flex-col gap-6`}>
+    <div className={`flex flex-col gap-6`}>
       {/* Header */}
       <div
         className={`flex flex-col md:flex-row items-start md:items-center gap-6 justify-between`}
@@ -155,7 +162,7 @@ export default function Payment() {
             onChange={(e) => {
               setFilter((prev) => ({ ...prev, grade: e.target.value }));
             }}
-            className={`border border-secondaryText px-4 py-2 rounded-lg w-full md:w-[300px] focus:outline-none focus:border-2 focus:border-primary focus:shadow-sm focus:shadow-yellow-200 active:border-2 active:border-primary `}
+            className={`border-2 border-secondaryText px-3 py-2 rounded-md w-full md:w-[300px] focus:outline-none focus:border-2 focus:border-primary focus:shadow-sm focus:shadow-yellow-200 active:border-2 active:border-primary `}
           >
             <option selected hidden value={``}>
               Select Month
@@ -169,14 +176,23 @@ export default function Payment() {
           </select>
 
           <Input
-            placeholder={`year`}
+            placeholder={`Year`}
             type={`text`}
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                setFilter((prev) => ({
+                  ...prev,
+                  year: Number(numberFormat(e.target.value)),
+                }));
+              }
+            }}
             onBlur={(e) => {
               setFilter((prev) => ({
                 ...prev,
                 year: Number(numberFormat(e.target.value)),
               }));
             }}
+            groupClassName="w-full"
           />
 
           <div
@@ -184,8 +200,16 @@ export default function Payment() {
           >
             <MagnifyingGlassIcon className={`text-gray-500 size-4`} />
             <input
+              onKeyDown={(e: any) => {
+                if (e.key === "Enter") {
+                  setFilter((prev) => ({
+                    ...prev,
+                    keyword: e.target.value,
+                  }));
+                }
+              }}
               placeholder={`Search...`}
-              className={`focus:outline-none`}
+              className={`focus:outline-none w-full`}
               type={`text`}
             />
           </div>
@@ -193,7 +217,7 @@ export default function Payment() {
         {/* Table */}
 
         <div className="relative overflow-x-auto z-10 ">
-          <table className="w-full text-sm text-left rtl:text-right text-primaryText ">
+          <table className="w-full text-sm text-left rtl:text-right text-primaryText hidden md:table ">
             <thead className="text-xs text-[#1A1A1A] uppercase bg-accents bg-opacity-5 ">
               <tr>
                 <th scope="col" className="px-6 py-3">
@@ -331,6 +355,93 @@ export default function Payment() {
             )}
             <tbody className={`w-full`}>{}</tbody>
           </table>
+          <div className={`flex flex-col gap-4 p-4`}>
+            {loading ? (
+              [0, 1, 2, 3].map((rows) => (
+                <div
+                  key={rows}
+                  className={`flex md:hidden flex-col border border-secondaryText rounded-lg p-3 active:bg-bgPrimary`}
+                >
+                  <div className={`flex items-center justify-between`}>
+                    <div className={`flex flex-col gap-4`}>
+                      <div className={`flex items-start gap-4`}>
+                        <div className={`flex flex-col`}>
+                          <div
+                            className={`w-11 h-11  bg-gray-500 animate-pulse text-white flex items-center justify-center rounded-[100%]`}
+                          />
+                        </div>
+                        <div className={`flex flex-col`}>
+                          <div
+                            className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg`}
+                          />
+                          <p className={`text-gray-400`}></p>
+                          <div
+                            className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg mt-1 mb-2`}
+                          />
+                          <div
+                            className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRightIcon className={`size-6 shrink-0`} />
+                  </div>
+                </div>
+              ))
+            ) : error ? (
+              <div
+                className={`md:hidden w-full flex items-center text-primaryText font-bold text-2xl px-5 py-10`}
+              >
+                DATA NOT FOUND
+              </div>
+            ) : (
+              data?.result.items.map((rows, index) => (
+                <Link
+                  key={index}
+                  href={`/payment/edit/${rows.id}`}
+                  className={`flex md:hidden flex-col border border-secondaryText rounded-lg p-3 active:bg-bgPrimary`}
+                >
+                  <div>
+                    <div
+                      className={`flex items-center justify-between w-full mb-3`}
+                    >
+                      <p className={`text-xs text-secondaryText`}>
+                        {rows.paidDate.toString()}
+                      </p>
+                      <Chip
+                        className={`text-xs`}
+                        color={translateColor(rows.status)}
+                      >
+                        {rows.status}
+                      </Chip>
+                    </div>
+                    <div className={`flex items-center w-full justify-between`}>
+                      <div className={`flex flex-col gap-4`}>
+                        <div className={`flex items-start gap-4`}>
+                          <div className={`flex flex-col`}>
+                            <div
+                              className={`aspect-square w-10 h-10 shrink-0 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
+                            >
+                              {getInitialFromName(rows.student.fullname)}
+                            </div>
+                          </div>
+                          <div className={`flex flex-col`}>
+                            <p className={`text-lg font-medium`}>
+                              {rows.student.name}
+                            </p>
+                            <p className={`text-secondaryText text-sm mb-2`}>
+                              {rows.month} {rows.year}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronRightIcon className={`size-6 shrink-0`} />
+                    </div>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
         </div>
         <div className={`flex w-full justify-end items-center py-3 gap-4 px-5`}>
           <button

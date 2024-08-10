@@ -88,7 +88,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
   }, []);
 
   return (
-    <main className={`p-10 pt-10 pb-40 md:pb-0`}>
+    <main className={``}>
       <div className={``}>
         <h1 className={`text-3xl font-bold`}>Edit Payment</h1>
         <p className={`mt-2 text-gray-400`}>Edit payment data of a student</p>

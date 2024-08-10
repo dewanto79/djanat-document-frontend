@@ -39,6 +39,12 @@ export default function Sidebar({ children, className }: SideBarProps) {
     },
     {
       level: 0,
+      name: "Student",
+      url: "/student",
+      icon: <UserIcon className={`size-6 `} />,
+    },
+    {
+      level: 0,
       name: "Payment",
       url: "/payment",
       icon: (
@@ -46,12 +52,6 @@ export default function Sidebar({ children, className }: SideBarProps) {
           className={` size-6 ${path === "/payment" && `text-primary`}`}
         />
       ),
-    },
-    {
-      level: 0,
-      name: "Student",
-      url: "/student",
-      icon: <UserIcon className={`size-6 `} />,
     },
   ];
 
@@ -249,7 +249,9 @@ export default function Sidebar({ children, className }: SideBarProps) {
             </div>
           </div>
         </div>
-        <div className={`bg-bgPrimary min-h-screen text-primaryText`}>
+        <div
+          className={`bg-bgPrimary min-h-screen text-primaryText p-4 pb-28  md:p-10`}
+        >
           {children}
         </div>
       </div>

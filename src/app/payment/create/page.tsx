@@ -84,7 +84,7 @@ export default function CreatePayment() {
     console.log(selectedData);
   }, [selectedData]);
   return (
-    <main className={`p-10 pt-10 pb-40 md:pb-0`}>
+    <main className={``}>
       <div className={``}>
         <h1 className={`text-3xl font-bold`}>Create Payment</h1>
         <p className={`mt-2 text-gray-400`}>Create payment data of a student</p>

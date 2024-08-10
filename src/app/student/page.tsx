@@ -11,7 +11,7 @@ import { useRequest } from "ahooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { handleNumberInput, translateColor } from "@/utils";
+import { getInitialFromName, handleNumberInput, translateColor } from "@/utils";
 import Chip from "../components/Chip";
 
 export default function Student() {
@@ -39,8 +39,10 @@ export default function Student() {
     run(temp);
   }, [filter]);
 
+  useEffect(() => {}, []);
+
   return (
-    <div className={`flex flex-col gap-6 p-4 md:px-10 md:py-10`}>
+    <div className={`flex flex-col gap-6`}>
       {/* Headers */}
       <div
         className={`flex flex-col gap-6 md:flex-row items-start md:items-center justify-between`}
@@ -144,8 +146,16 @@ export default function Student() {
           >
             <MagnifyingGlassIcon className={`text-gray-500 size-4`} />
             <input
+              onKeyDown={(e: any) => {
+                if (e.key === "Enter") {
+                  setFilter((prev) => ({
+                    ...prev,
+                    keyword: e.target.value,
+                  }));
+                }
+              }}
               placeholder={`Search...`}
-              className={`focus:outline-none`}
+              className={`focus:outline-none w-full bg-inherit`}
               type={`text`}
             />
           </div>
@@ -153,7 +163,7 @@ export default function Student() {
         {/* Table */}
 
         <div className="relative overflow-x-auto z-10 ">
-          <table className="w-full text-sm text-left rtl:text-right text-primaryText ">
+          <table className="w-full text-sm text-left rtl:text-right text-primaryText hidden md:table ">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50  dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
@@ -227,8 +237,7 @@ export default function Student() {
                         <div
                           className={`w-11 h-11 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
                         >
-                          {" "}
-                          JJ
+                          {getInitialFromName(rows.fullname)}
                         </div>
                         <div className={`flex flex-col`}>
                           <p>{rows.fullname}</p>
@@ -257,9 +266,101 @@ export default function Student() {
             )}
             <tbody className={`w-full`}>{}</tbody>
           </table>
+          <div className={`flex flex-col gap-4 px-4 py-6 `}>
+            {loading ? (
+              [0, 1, 2, 3].map((rows) => (
+                <div
+                  key={rows}
+                  className={`flex md:hidden flex-col border border-secondaryText rounded-lg p-3 active:bg-bgPrimary`}
+                >
+                  <div className={`flex items-center justify-between mb-2`}>
+                    <div
+                      className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg`}
+                    />
+                    <div
+                      className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg`}
+                    />
+                  </div>
+                  <div className={`flex items-center justify-between`}>
+                    <div className={`flex flex-col gap-4`}>
+                      <div className={`flex items-start gap-4`}>
+                        <div className={`flex flex-col`}>
+                          <div
+                            className={`w-11 h-11  bg-gray-500 animate-pulse text-white flex items-center justify-center rounded-[100%]`}
+                          />
+                        </div>
+                        <div className={`flex flex-col`}>
+                          <div
+                            className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg`}
+                          />
+                          <p className={`text-gray-400`}></p>
+                          <div
+                            className={`h-4 w-[60px] bg-gray-500 animate-pulse rounded-lg mt-1 mb-2`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRightIcon className={`size-6 shrink-0`} />
+                  </div>
+                </div>
+              ))
+            ) : error ? (
+              <div
+                className={`md:hidden w-full flex items-center text-primaryText font-bold text-2xl px-5 py-10`}
+              >
+                DATA NOT FOUND
+              </div>
+            ) : (
+              data?.result.items.map((rows, index) => (
+                <Link
+                  key={index}
+                  href={`/student/edit/${rows.id}`}
+                  className={`flex md:hidden flex-col border border-secondaryText rounded-lg p-3 active:bg-bgPrimary`}
+                >
+                  <div>
+                    <div
+                      className={`flex items-center justify-between w-full mb-3`}
+                    >
+                      <p className={`text-xs text-secondaryText`}>
+                        {rows.startdate.toString()}
+                      </p>
+                      <Chip
+                        className={`text-xs`}
+                        color={translateColor(rows.status)}
+                      >
+                        {rows.status}
+                      </Chip>
+                    </div>
+                    <div className={`flex items-center w-full justify-between`}>
+                      <div className={`flex flex-col gap-4`}>
+                        <div className={`flex items-start gap-4`}>
+                          <div className={`flex flex-col`}>
+                            <div
+                              className={`aspect-square w-10 h-10 shrink-0 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
+                            >
+                              {getInitialFromName(rows.fullname)}
+                            </div>
+                          </div>
+                          <div className={`flex flex-col`}>
+                            <p className={`text-lg font-medium`}>{rows.name}</p>
+                            <p className={`text-secondaryText text-sm mb-2`}>
+                              Grade: {rows.grade}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronRightIcon className={`size-6 shrink-0`} />
+                    </div>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
         </div>
         {/* Pagination */}
-        <div className={`flex w-full justify-end items-center py-3 gap-4 px-5`}>
+        <div
+          className={`flex w-full justify-between md:justify-end items-center py-3 gap-4 px-5`}
+        >
           <button
             disabled={filter.page === 1}
             onClick={() => {

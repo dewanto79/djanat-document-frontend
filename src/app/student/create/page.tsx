@@ -44,7 +44,7 @@ export default function CreateStudent() {
   };
 
   return (
-    <main className={`p-10 py-6`}>
+    <main className={``}>
       <div className={``}>
         <h1 className={`text-3xl font-bold`}>Create Student</h1>
         <p className={`mt-2 text-gray-400`}>Create a new student data</p>

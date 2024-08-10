@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="px-10 py-10 flex flex-col gap-6 h-screen">
+    <main className="flex flex-col gap-6 h-screen">
       {/* Header */}
       <div
         className={`flex flex-col md:flex-row items-start md:items-center gap-6 justify-between`}

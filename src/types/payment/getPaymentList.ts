@@ -29,7 +29,7 @@ export interface PaymentListProps {
   month: string;
   year: number;
   paidDate: Date;
-  status: string;
+  status: EPaymentStatus;
   studentId: string;
   createdBy: string;
   student: Student;
