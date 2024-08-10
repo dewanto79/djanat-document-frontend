@@ -1,26 +1,57 @@
 "use client";
 import { getStudentList } from "@/service/student";
 import { EStudentStatus, GetStudentListParams } from "@/types/student";
+
 import {
   MagnifyingGlassIcon,
   PencilSquareIcon,
-} from "@heroicons/react/16/solid";
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/solid";
 import { useRequest } from "ahooks";
 import { error } from "console";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
+import { deletePayment, getPayment } from "@/service/payment";
+import {
+  EPaymentStatus,
+  GetPaymentParams,
+  PaymentListProps,
+} from "@/types/payment/getPaymentList";
+import { currencyFormat, handleNumberInput, numberFormat } from "@/utils";
+import { TrashIcon } from "@heroicons/react/20/solid";
+import { Month } from "@/types/payment/postPayment";
+import Input from "../components/Input";
+import FeedbackModals from "../components/FeedbackModals";
+import ConfirmationModals from "../components/ConfirmationModals";
 
 export default function Payment() {
-  const [filter, setFilter] = useState<GetStudentListParams>({
+  const [filter, setFilter] = useState<GetPaymentParams>({
     keyword: "",
     status: "",
-    grade: "",
+    month: "",
+    year: 2024,
     limit: 10,
     page: 1,
   });
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+  const [selectedData, setSelectedData] = useState<PaymentListProps>();
 
-  const { run, data, loading, error } = useRequest(getStudentList);
+  const { run, data, loading, error } = useRequest(getPayment);
+  const { runAsync: deleteData } = useRequest(deletePayment);
+
+  const handleDeleteData = () => {
+    setConfirmDelete(false);
+    deleteData(selectedData?.id!)
+      .then((res) => {
+        run({});
+      })
+      .catch((err) => {
+        alert("Failed to delete data");
+      });
+  };
 
   useEffect(() => {
     let temp = { ...filter };
@@ -51,13 +82,13 @@ export default function Payment() {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="2"
+              strokeWidth="2"
               stroke="currentColor"
               className="size-5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
@@ -70,13 +101,13 @@ export default function Payment() {
       >
         {/* Filter Status */}
         <div
-          className={`px-5  flex items-center gap-6 transition-colors duration-300`}
+          className={`px-6 flex items-center gap-6 transition-colors duration-300`}
         >
           <button
             onClick={() => {
               setFilter((prev) => ({ ...prev, status: "" }));
             }}
-            className={`aspect-square transition-colors duration-300 py-6 ${
+            className={` transition-colors duration-300 py-4 ${
               filter.status === ""
                 ? "font-bold border-b-2 border-black "
                 : "font-normal"
@@ -86,30 +117,33 @@ export default function Payment() {
           </button>
           <button
             onClick={() => {
-              setFilter((prev) => ({ ...prev, status: EStudentStatus.ACTIVE }));
+              setFilter((prev) => ({
+                ...prev,
+                status: EPaymentStatus.TRANSFER,
+              }));
             }}
-            className={`aspect-square transition-colors duration-300  py-6 ${
-              filter.status === EStudentStatus.ACTIVE
-                ? "font-bold border-b-2 text-success "
+            className={` transition-colors duration-300  py-4 ${
+              filter.status === EPaymentStatus.TRANSFER
+                ? "font-bold border-b-2 text-success border-success"
                 : "font-normal"
             }`}
           >
-            Active
+            Transfer
           </button>
           <button
             onClick={() => {
               setFilter((prev) => ({
                 ...prev,
-                status: EStudentStatus.INACTIVE,
+                status: EPaymentStatus.PAID,
               }));
             }}
-            className={`aspect-square transition-colors duration-300  py-6 ${
-              filter.status === EStudentStatus.INACTIVE
+            className={` transition-colors duration-300  py-4 ${
+              filter.status === EPaymentStatus.PAID
                 ? "font-bold border-b-2 text-warning border-warning "
                 : "font-normal"
             }`}
           >
-            Inactive
+            Paid
           </button>
         </div>
 
@@ -121,20 +155,32 @@ export default function Payment() {
             onChange={(e) => {
               setFilter((prev) => ({ ...prev, grade: e.target.value }));
             }}
-            className={`border border-gray-200 p-3 rounded-lg w-full md:w-[300px] hover:outline-gray-500 focus:outline-black`}
+            className={`border border-secondaryText px-4 py-2 rounded-lg w-full md:w-[300px] focus:outline-none focus:border-2 focus:border-primary focus:shadow-sm focus:shadow-yellow-200 active:border-2 active:border-primary `}
           >
             <option selected hidden value={``}>
-              Start Grade
+              Select Month
             </option>
-            <option value={``}>All</option>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((rows) => (
-              <option key={rows} value={rows + 1}>
-                {rows + 1}
+            <option value={``}>All Month</option>
+            {Object.values(Month).map((rows) => (
+              <option key={rows} value={rows}>
+                {rows}
               </option>
             ))}
           </select>
+
+          <Input
+            placeholder={`year`}
+            type={`text`}
+            onBlur={(e) => {
+              setFilter((prev) => ({
+                ...prev,
+                year: Number(numberFormat(e.target.value)),
+              }));
+            }}
+          />
+
           <div
-            className={`flex gap-2 items-center px-3 py-3 border-2 border-gray-200  rounded-lg w-full focus-within:border-black `}
+            className={`flex gap-2 items-center px-4 py-2 border-2 border-secondaryText  rounded-md w-full focus-within:border-primary focus-within:shadow-sm focus-within:shadow-yellow-200`}
           >
             <MagnifyingGlassIcon className={`text-gray-500 size-4`} />
             <input
@@ -148,13 +194,19 @@ export default function Payment() {
 
         <div className="relative overflow-x-auto z-10 ">
           <table className="w-full text-sm text-left rtl:text-right text-primaryText ">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50  dark:text-gray-400">
+            <thead className="text-xs text-[#1A1A1A] uppercase bg-accents bg-opacity-5 ">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Name
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Grade
+                  Amount
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Period
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Paid Date
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Status
@@ -200,6 +252,16 @@ export default function Payment() {
                         className={`bg-gray-500 w-[50px] animate-pulse  px-3 py-1 rounded-full h-5 `}
                       />
                     </td>
+                    <td className="px-6 py-4 ">
+                      <div
+                        className={`bg-gray-500 w-[50px] animate-pulse  px-3 py-1 rounded-full h-5 `}
+                      />
+                    </td>
+                    <td className="px-6 py-4 ">
+                      <div
+                        className={`bg-gray-500 w-[50px] animate-pulse  px-3 py-1 rounded-full h-5 `}
+                      />
+                    </td>
                   </tr>
                 </tbody>
               ))
@@ -225,12 +287,18 @@ export default function Payment() {
                           JJ
                         </div>
                         <div className={`flex flex-col`}>
-                          <p>{rows.fullname}</p>
+                          <p>{rows.student.fullname}</p>
                           <p className={`text-gray-400`}></p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">{rows.grade}</td>
+                    <td className="px-6 py-4">
+                      Rp{currencyFormat(rows.amount)}
+                    </td>
+                    <td className="px-6 py-4">
+                      {rows.month} {rows.year}
+                    </td>
+                    <td className="px-6 py-4">{rows.paidDate.toString()}</td>
                     <td className="px-6 py-4">
                       <div
                         className={`bg-green-200 text-green-700 text-center px-3 py-1 rounded-full w-fit`}
@@ -238,14 +306,24 @@ export default function Payment() {
                         {rows.status}
                       </div>
                     </td>
-                    <td className="px-6 py-4 ">
-                      <Link
-                        href={`/student/edit/${rows.id}`}
-                        className={`flex items-center gap-2`}
-                      >
-                        <PencilSquareIcon className={`size-6`} />
-                        Edit
-                      </Link>
+                    <td className="px-6 py-4   ">
+                      <div className={`flex items-center divide-x`}>
+                        <Link
+                          href={`/payment/edit/${rows.id}`}
+                          className={`flex items-center gap-2 pr-2 hover:text-primary`}
+                        >
+                          <PencilSquareIcon className={`size-6`} />
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setSelectedData(rows);
+                            setConfirmDelete(true);
+                          }}
+                          className={`flex items-center gap-2 pl-2 hover:text-warning`}
+                        >
+                          <TrashIcon className={`size-6`} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -254,7 +332,75 @@ export default function Payment() {
             <tbody className={`w-full`}>{}</tbody>
           </table>
         </div>
+        <div className={`flex w-full justify-end items-center py-3 gap-4 px-5`}>
+          <button
+            disabled={filter.page === 1}
+            onClick={() => {
+              setFilter((prev) => ({ ...prev, page: Number(prev.page)! - 1 }));
+            }}
+            className={`disabled:text-secondaryText text-primaryText`}
+          >
+            <ChevronLeftIcon className={` size-6 shrink-0 `} />
+          </button>
+          <input
+            onChange={(e) => {
+              if (e.target.value === "") {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: "",
+                }));
+              } else if (
+                Number(e.target.value) > data?.result.meta.totalPages!
+              ) {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: data?.result.meta.totalPages!,
+                }));
+              } else {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: Number(handleNumberInput(e.target.value)),
+                }));
+              }
+            }}
+            onBlur={(e) => {
+              setFilter((prev) => ({ ...prev, page: Number(e.target.value) }));
+            }}
+            value={filter.page}
+            className={`w-[40px] border border-secondaryText text-center focus:outline-none focus:border-accents focus:border-2 rounded-sm`}
+            type={`text`}
+          />
+          <p>of</p>
+          <p>{data?.result.meta.totalPages}</p>
+          <button
+            disabled={filter.page === data?.result.meta.totalPages}
+            onClick={() => {
+              setFilter((prev) => ({ ...prev, page: Number(prev.page) + 1 }));
+            }}
+            className={`disabled:text-secondaryText text-primaryText`}
+          >
+            <ChevronRightIcon className={`text-inherit size-6 shrink-0 `} />
+          </button>
+        </div>
       </div>
+      <ConfirmationModals
+        icons={<ExclamationTriangleIcon className={`size-32 text-primary`} />}
+        title={"Are you sure?"}
+        open={confirmDelete}
+        onClose={function (): void {
+          setConfirmDelete(false);
+        }}
+        onReject={() => {
+          setConfirmDelete(false);
+          setSelectedData(undefined);
+        }}
+        onApprove={() => {
+          handleDeleteData();
+        }}
+        approveText={"Delete this data"}
+      >
+        Are you sure you want to delete the following payment data?
+      </ConfirmationModals>
     </div>
   );
 }

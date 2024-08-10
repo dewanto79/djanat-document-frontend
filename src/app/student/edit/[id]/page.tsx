@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
 import { getStudentDetail, postStudent, putStudent } from "@/service/student";
@@ -187,13 +188,13 @@ export default function EditStudent({ params }: { params: { id: string } }) {
           <div
             className={`md:col-span-2 flex items-center justify-end w-full mt-1 `}
           >
-            <button
+            <Button
               type={`submit`}
               disabled={loading}
-              className={`px-5 py-2 bg-primaryText text-white rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
+              className={`px-5 py-2  rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
             >
               Edit Data
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -205,6 +206,9 @@ export default function EditStudent({ params }: { params: { id: string } }) {
           router.push(`/student`);
         }}
         actionText="Back to Homepage"
+        onAction={() => {
+          router.push(`/student`);
+        }}
       >
         Data has been edited and saved to the database.
       </FeedbackModals>

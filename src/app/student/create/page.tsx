@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
 import { postStudent } from "@/service/student";
@@ -162,13 +163,13 @@ export default function CreateStudent() {
             type={`date`}
           />
           <div className={`md:col-span-2 flex justify-end w-full mt-4 `}>
-            <button
+            <Button
               type={`submit`}
               disabled={loading}
-              className={`px-5 py-2 bg-primaryText text-white rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
+              className={`px-5 py-2 font-medium rounded-lg md:w-fit w-full hover:bg-opacity-80 disabled:bg-opacity-20`}
             >
               Create User
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -180,6 +181,9 @@ export default function CreateStudent() {
           router.push(`/student`);
         }}
         actionText="Back to Homepage"
+        onAction={() => {
+          router.push(`/student`);
+        }}
       >
         New Student data has been added to the database
       </FeedbackModals>

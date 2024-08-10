@@ -2,8 +2,14 @@
 import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
-import { getStudentPayment, postPayment } from "@/service/payment";
+import {
+  getPaymentDetail,
+  getStudentPayment,
+  patchPayment,
+  postPayment,
+} from "@/service/payment";
 import { getStudentList, postStudent } from "@/service/student";
+import { EPaymentStatus } from "@/types/payment/getPaymentList";
 import { Month, PostPaymentPayload } from "@/types/payment/postPayment";
 import { GetStudentPaymentResponseProps } from "@/types/payment/student";
 import { PostStudentRequestProps } from "@/types/postStudent";
@@ -19,7 +25,7 @@ import { error } from "console";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function CreatePayment() {
+export default function EditPayment({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [form, setForm] = useState<PostPaymentPayload>({
     amount: 0,
@@ -41,16 +47,16 @@ export default function CreatePayment() {
   const [data, setData] = useState<GetStudentPaymentResponseProps>();
   const [selectedData, setSelectedData] = useState<any>();
 
-  const { runAsync, loading, error } = useRequest(postPayment, {
+  const { runAsync, loading, error } = useRequest(patchPayment, {
     manual: true,
     loadingDelay: 2000,
   });
 
   const {
-    runAsync: searchStudents,
+    runAsync: fetchPayment,
     loading: searchLoading,
-    error: studentError,
-  } = useRequest(getStudentPayment, {
+    error: fetchPaymentError,
+  } = useRequest(getPaymentDetail, {
     manual: true,
   });
 
@@ -60,7 +66,7 @@ export default function CreatePayment() {
       studentId: selectedData.id,
       amount: Number(form.amount.toString().replaceAll(",", "")),
     };
-    runAsync(submittedPayload)
+    runAsync(selectedData.id, submittedPayload)
       .then(() => {
         setModalSuccess(true);
       })
@@ -70,24 +76,22 @@ export default function CreatePayment() {
   };
 
   useEffect(() => {
-    searchStudents({ keyword: searchDelay })
-      .then((res) => {
-        setManualLoading(false);
-        setData(res);
-      })
-      .catch(() => {
-        setManualLoading(false);
+    fetchPayment(params.id).then((res) => {
+      const { student, ...form } = res.result;
+      setForm({
+        ...form,
+        year: form.year.toString(),
+        paidDate: form.paidDate.toString(),
       });
-  }, [searchDelay]);
+      setSelectedData(student);
+    });
+  }, []);
 
-  useEffect(() => {
-    console.log(selectedData);
-  }, [selectedData]);
   return (
     <main className={`p-10 pt-10 pb-40 md:pb-0`}>
       <div className={``}>
-        <h1 className={`text-3xl font-bold`}>Create Payment</h1>
-        <p className={`mt-2 text-gray-400`}>Create payment data of a student</p>
+        <h1 className={`text-3xl font-bold`}>Edit Payment</h1>
+        <p className={`mt-2 text-gray-400`}>Edit payment data of a student</p>
       </div>
       <div className={`flex flex-col  gap-4 rounded-2xl mt-8 bg-white `}>
         <form
@@ -99,65 +103,6 @@ export default function CreatePayment() {
         >
           <div className={`flex flex-col md:flex-row gap-6 md:divide-x`}>
             <div className={`flex flex-col w-full gap-6`}>
-              <div className={`w-full`}>
-                <h2
-                  className={`text-lg font-semibold text-center md:text-left`}
-                >
-                  Search Student
-                </h2>
-                <div className={`relative md:col-span-2 mt-3 `}>
-                  <Input
-                    onFocus={() => {
-                      setShow(true);
-                    }}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                      setManualLoading(true);
-                      setShow(true);
-                    }}
-                    placeholder={`Dewanto Surya Setyoadji`}
-                  />
-                  {manualLoading ? (
-                    <div
-                      className={`absolute top-full flex flex-col divide-y bg-white border border-secondaryText w-full px-3 py-2`}
-                    >
-                      Searching...
-                    </div>
-                  ) : (
-                    show &&
-                    search.length > 0 &&
-                    (studentError ? (
-                      <div
-                        className={`absolute top-full flex flex-col divide-y bg-white border border-secondaryText w-full px-3 py-2`}
-                      >
-                        <div>Not Found</div>
-                      </div>
-                    ) : (
-                      <div
-                        className={`max-h-[200px] overflow-auto absolute top-full flex flex-col divide-y bg-white border border-secondaryText w-full px-3 py-2`}
-                      >
-                        {data?.result.items.map((rows, index) => (
-                          <div
-                            onClick={(e) => {
-                              setSelectedData(rows);
-                              setForm((prev) => ({
-                                ...prev,
-                                studentId: rows.id,
-                              }));
-                              setShow(false);
-                            }}
-                            className={`py-3 hover:cursor-pointer hover:bg-bgPrimary`}
-                            key={index}
-                          >
-                            {rows.fullname}
-                          </div>
-                        ))}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
               <div className={``}>
                 <h2
                   className={`text-lg font-semibold text-center md:text-left`}
@@ -238,9 +183,6 @@ export default function CreatePayment() {
                       }}
                       className={`px-4 py-3 border border-secondaryText rounded-lg`}
                     >
-                      <option value={``} hidden selected>
-                        Select Paid Month
-                      </option>
                       {Object.values(Month).map((rows, index) => (
                         <option
                           key={index}
@@ -287,7 +229,30 @@ export default function CreatePayment() {
                     label={`Paid Date`}
                     type={`date`}
                     max={new Date().toISOString().split("T")[0]}
+                    value={form.paidDate}
                   />
+                  <div className={`flex flex-col`}>
+                    <label htmlFor={`month`} className={`mb-2`}>
+                      Status
+                    </label>
+                    <select
+                      id={`month`}
+                      onChange={(e) => {
+                        setForm((prev) => ({
+                          ...prev,
+                          status: e.target.value,
+                        }));
+                      }}
+                      className={`px-4 py-3 border border-secondaryText rounded-lg`}
+                      value={form.status}
+                    >
+                      {Object.values(EPaymentStatus).map((rows, index) => (
+                        <option key={index} value={rows}>
+                          {rows}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               ) : (
                 <p className={`mt-6 text-center text-secondaryText`}>

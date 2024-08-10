@@ -11,6 +11,8 @@ import { useRequest } from "ahooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
+import { handleNumberInput, translateColor } from "@/utils";
+import Chip from "../components/Chip";
 
 export default function Student() {
   const [filter, setFilter] = useState<GetStudentListParams>({
@@ -53,13 +55,13 @@ export default function Student() {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="2"
+              strokeWidth="2"
               stroke="currentColor"
               className="size-5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
@@ -92,7 +94,7 @@ export default function Student() {
             onClick={() => {
               setFilter((prev) => ({ ...prev, status: EStudentStatus.ACTIVE }));
             }}
-            className={`aspect-square transition-colors duration-300  py-3 ${
+            className={`aspect-square transition-colors duration-300  py-6 ${
               filter.status === EStudentStatus.ACTIVE
                 ? "font-bold border-b-2 border-green-700 text-green-700 "
                 : "font-normal"
@@ -107,7 +109,7 @@ export default function Student() {
                 status: EStudentStatus.INACTIVE,
               }));
             }}
-            className={`aspect-square transition-colors duration-300  py-3 ${
+            className={`aspect-square transition-colors duration-300  py-6 ${
               filter.status === EStudentStatus.INACTIVE
                 ? "font-bold border-b-2 border-red-700 text-red-700 "
                 : "font-normal"
@@ -236,16 +238,14 @@ export default function Student() {
                     </td>
                     <td className="px-6 py-4">{rows.grade}</td>
                     <td className="px-6 py-4">
-                      <div
-                        className={`bg-green-200 text-green-700 text-center px-3 py-1 rounded-full w-fit`}
-                      >
+                      <Chip color={translateColor(rows.status)}>
                         {rows.status}
-                      </div>
+                      </Chip>
                     </td>
                     <td className="px-6 py-4 ">
                       <Link
                         href={`/student/edit/${rows.id}`}
-                        className={`flex items-center gap-2`}
+                        className={`flex items-center gap-2 hover:text-primary`}
                       >
                         <PencilSquareIcon className={`size-6`} />
                         Edit
@@ -260,24 +260,53 @@ export default function Student() {
         </div>
         {/* Pagination */}
         <div className={`flex w-full justify-end items-center py-3 gap-4 px-5`}>
-          <button>
-            <ChevronLeftIcon className={`text-primaryText size-6 shrink-0 `} />
+          <button
+            disabled={filter.page === 1}
+            onClick={() => {
+              setFilter((prev) => ({ ...prev, page: Number(prev.page) - 1 }));
+            }}
+            className={`disabled:text-secondaryText text-primaryText`}
+          >
+            <ChevronLeftIcon className={` size-6 shrink-0 `} />
           </button>
           <input
             onChange={(e) => {
-              setFilter((prev) => ({ ...prev, page: Number(e.target.value) }));
+              if (e.target.value === "") {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: "",
+                }));
+              } else if (
+                Number(e.target.value) > data?.result.meta.totalPages!
+              ) {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: data?.result.meta.totalPages!,
+                }));
+              } else {
+                setFilter((prev) => ({
+                  ...prev,
+                  page: Number(handleNumberInput(e.target.value)),
+                }));
+              }
             }}
             onBlur={(e) => {
               setFilter((prev) => ({ ...prev, page: Number(e.target.value) }));
             }}
             value={filter.page}
-            className={`w-[40px]`}
-            type={`number`}
+            className={`w-[40px] border border-secondaryText text-center focus:outline-none focus:border-accents focus:border-2 rounded-sm`}
+            type={`text`}
           />
           <p>of</p>
           <p>{data?.result.meta.totalPages}</p>
-          <button>
-            <ChevronRightIcon className={`text-primaryText size-6 shrink-0 `} />
+          <button
+            disabled={filter.page === data?.result.meta.totalPages}
+            onClick={() => {
+              setFilter((prev) => ({ ...prev, page: Number(prev.page) + 1 }));
+            }}
+            className={`disabled:text-secondaryText text-primaryText`}
+          >
+            <ChevronRightIcon className={`text-inherit size-6 shrink-0 `} />
           </button>
         </div>
       </div>

@@ -41,13 +41,17 @@ export default function Sidebar({ children, className }: SideBarProps) {
       level: 0,
       name: "Payment",
       url: "/payment",
-      icon: <BanknotesIcon className={` size-6`} />,
+      icon: (
+        <BanknotesIcon
+          className={` size-6 ${path === "/payment" && `text-primary`}`}
+        />
+      ),
     },
     {
       level: 0,
       name: "Student",
       url: "/student",
-      icon: <UserIcon className={`size-6`} />,
+      icon: <UserIcon className={`size-6 `} />,
     },
   ];
 
@@ -87,7 +91,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className={`bg-bgPrimary text-primaryText h-full w-[280px]  px-5 py-6 z-50 flex flex-col justify-between`}
+          className={`bg-white text-primaryText h-full w-[280px]  px-5 py-6 z-50 flex flex-col justify-between`}
         >
           <div className={``}>
             <div className={`flex justify-between`}>
@@ -142,7 +146,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
                   key={index}
                   className={`flex items-center gap-4   px-3 py-3 ${
                     path === rows.url
-                      ? "bg-yellow-100 bg-opacity-50  text-[#d58b0a]"
+                      ? "bg-[#fff8ee] text-primary font-semibold"
                       : "hover:bg-gray-500 hover:bg-opacity-5"
                   } transition-colors duration-200`}
                   href={rows.url}
@@ -164,13 +168,13 @@ export default function Sidebar({ children, className }: SideBarProps) {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="size-5 text-warning"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
               />
             </svg>
@@ -181,7 +185,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
       <div className={`w-full`}>
         {/* Navbar */}
         <div
-          className={`sticky top-0 flex gap-4 justify-between w-full bg-bgPrimary  px-5 py-3 md:py-5 z-40 md:hidden`}
+          className={`sticky top-0 flex gap-4 justify-between w-full bg-white  px-5 py-3 md:py-5 z-40 md:hidden`}
         >
           <button
             onClick={() => {
@@ -245,7 +249,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
             </div>
           </div>
         </div>
-        <div className={`bg-white min-h-screen text-primaryText`}>
+        <div className={`bg-bgPrimary min-h-screen text-primaryText`}>
           {children}
         </div>
       </div>

@@ -5,7 +5,7 @@ export interface GetStudentListParams {
   status?: EStudentStatus | "";
   grade?: string;
   limit?: number;
-  page?: number;
+  page?: number | "";
 }
 
 export enum EStudentStatus {
