@@ -309,8 +309,7 @@ export default function Payment() {
                         <div
                           className={`w-11 h-11 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
                         >
-                          {" "}
-                          JJ
+                          {getInitialFromName(rows.student.fullname)}
                         </div>
                         <div className={`flex flex-col`}>
                           <p>{rows.student.fullname}</p>

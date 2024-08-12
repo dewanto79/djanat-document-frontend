@@ -212,7 +212,7 @@ export default function Sidebar({ children, className }: SideBarProps) {
             <div
               className={`w-11 h-11 rounded-full bg-slate-900 text-white  text-2xl flex items-center justify-center`}
             >
-              JJ
+              {getInitialFromName(profile?.name)}
             </div>
 
             <div>

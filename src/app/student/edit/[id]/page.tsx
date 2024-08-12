@@ -55,7 +55,8 @@ export default function EditStudent({ params }: { params: { id: string } }) {
 
   return (
     <main className={``}>
-      <div className={``}>
+      <Breadcrumbs />
+      <div className={`mt-4`}>
         <h1 className={`text-3xl font-bold`}>Edit Student</h1>
         <p className={`mt-2 text-gray-400`}>Edit an existing student data</p>
       </div>
