@@ -1,5 +1,6 @@
 "use client";
 
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
