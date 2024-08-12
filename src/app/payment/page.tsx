@@ -46,8 +46,10 @@ export default function Payment() {
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<PaymentListProps>();
 
-  const { run, data, loading, error } = useRequest(getPayment);
-  const { runAsync: deleteData } = useRequest(deletePayment);
+  const { run, data, loading, error } = useRequest(getPayment, {
+    manual: true,
+  });
+  const { runAsync: deleteData } = useRequest(deletePayment, { manual: true });
 
   const handleDeleteData = () => {
     setConfirmDelete(false);
