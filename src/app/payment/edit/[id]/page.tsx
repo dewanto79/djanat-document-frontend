@@ -66,7 +66,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
       studentId: selectedData.id,
       amount: Number(form.amount.toString().replaceAll(",", "")),
     };
-    runAsync(selectedData.id, submittedPayload)
+    runAsync(params.id, submittedPayload)
       .then(() => {
         setModalSuccess(true);
       })
@@ -285,7 +285,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
           router.push(`/payment`);
         }}
       >
-        New Student data has been added to the database
+        Payment data has been edited Successfully
       </FeedbackModals>
       <FeedbackModals
         icons={<XCircleIcon className={`text-red-500 size-24`} />}
