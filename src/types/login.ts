@@ -3,6 +3,10 @@ export interface FormProps {
   password: string;
 }
 
+export interface LoginGoogleProps {
+  token: string;
+}
+
 export interface LoginRes {
   result: {
     profile: {

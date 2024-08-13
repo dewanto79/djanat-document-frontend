@@ -254,9 +254,11 @@ export default function CreatePayment() {
                       </option>
                       {Object.values(Month).map((rows, index) => (
                         <option
+                          className={`disabled:text-secondaryText`}
                           key={index}
                           disabled={selectedData?.payments?.some(
-                            (rows2: any) => rows2 === rows
+                            (rows2: any) =>
+                              rows2.month === rows && rows2.year === Number(form.year)
                           )}
                           value={rows}
                         >

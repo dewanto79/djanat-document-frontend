@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Layout from "./Layout/Layout";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className + `bg-[#D6D6D6]`}>
-        <Layout>{children}</Layout>
+        <GoogleOAuthProvider
+          clientId={process.env.GOOGLE_OAUTH_CLIENT_ID ?? ""}
+        >
+          <Layout>{children}</Layout>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
