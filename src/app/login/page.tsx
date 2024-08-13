@@ -228,7 +228,7 @@ export default function Login() {
         </Button>
       </div>
       <FeedbackModals
-        icons={<XCircleIcon className={`size-20 text-warning`}/> }
+        icons={<XCircleIcon className={`size-20 text-warning`} />}
         title={"Failed to Login"}
         open={failedModal}
         onClose={function (): void {
@@ -239,10 +239,7 @@ export default function Login() {
         }}
         actionText="Try again"
       >
-        <p>{errorGoogle?.message}</p>
-        <p className={`text-warning`}>
-          {errorGoogle?.response?.data?.message!}
-        </p>
+        <p className={`text-warning`}>{errorGoogle?.message}</p>
       </FeedbackModals>
     </div>
   );
