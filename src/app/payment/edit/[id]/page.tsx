@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
@@ -66,7 +67,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
       studentId: selectedData.id,
       amount: Number(form.amount.toString().replaceAll(",", "")),
     };
-    runAsync(selectedData.id, submittedPayload)
+    runAsync(params.id, submittedPayload)
       .then(() => {
         setModalSuccess(true);
       })
@@ -89,7 +90,8 @@ export default function EditPayment({ params }: { params: { id: string } }) {
 
   return (
     <main className={``}>
-      <div className={``}>
+      <Breadcrumbs />
+      <div className={`mt-4`}>
         <h1 className={`text-3xl font-bold`}>Edit Payment</h1>
         <p className={`mt-2 text-gray-400`}>Edit payment data of a student</p>
       </div>
@@ -285,7 +287,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
           router.push(`/payment`);
         }}
       >
-        New Student data has been added to the database
+        Payment data has been edited Successfully
       </FeedbackModals>
       <FeedbackModals
         icons={<XCircleIcon className={`text-red-500 size-24`} />}

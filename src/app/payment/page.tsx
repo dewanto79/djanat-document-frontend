@@ -46,8 +46,10 @@ export default function Payment() {
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<PaymentListProps>();
 
-  const { run, data, loading, error } = useRequest(getPayment);
-  const { runAsync: deleteData } = useRequest(deletePayment);
+  const { run, data, loading, error } = useRequest(getPayment, {
+    manual: true,
+  });
+  const { runAsync: deleteData } = useRequest(deletePayment, { manual: true });
 
   const handleDeleteData = () => {
     setConfirmDelete(false);
@@ -307,8 +309,7 @@ export default function Payment() {
                         <div
                           className={`w-11 h-11 text-xl bg-primaryText text-white flex items-center justify-center rounded-[100%]`}
                         >
-                          {" "}
-                          JJ
+                          {getInitialFromName(rows.student.fullname)}
                         </div>
                         <div className={`flex flex-col`}>
                           <p>{rows.student.fullname}</p>

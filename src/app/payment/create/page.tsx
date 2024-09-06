@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
@@ -14,13 +15,19 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/16/solid";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useDebounce, useRequest } from "ahooks";
 import { error } from "console";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CreatePayment() {
   const router = useRouter();
+  const path = usePathname()
+    .split(`/`)
+    .map(
+      (rows) => rows.charAt(0).toUpperCase() + rows.substring(1).toLowerCase()
+    );
   const [form, setForm] = useState<PostPaymentPayload>({
     amount: 0,
     month: "",
@@ -85,8 +92,12 @@ export default function CreatePayment() {
   }, [selectedData]);
   return (
     <main className={``}>
-      <div className={``}>
-        <h1 className={`text-3xl font-bold`}>Create Payment</h1>
+      <Breadcrumbs />
+
+      <div className={`mt-4`}>
+        <h1 className={`text-3xl font-bold flex items-center`}>
+          Create Payment
+        </h1>
         <p className={`mt-2 text-gray-400`}>Create payment data of a student</p>
       </div>
       <div className={`flex flex-col  gap-4 rounded-2xl mt-8 bg-white `}>
@@ -243,9 +254,11 @@ export default function CreatePayment() {
                       </option>
                       {Object.values(Month).map((rows, index) => (
                         <option
+                          className={`disabled:text-secondaryText`}
                           key={index}
                           disabled={selectedData?.payments?.some(
-                            (rows2: any) => rows2 === rows
+                            (rows2: any) =>
+                              rows2.month === rows && rows2.year === Number(form.year)
                           )}
                           value={rows}
                         >

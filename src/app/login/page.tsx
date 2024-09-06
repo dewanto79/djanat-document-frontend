@@ -1,11 +1,15 @@
 "use client";
-import { PostLogin } from "@/service/login";
+import { PostLogin, PostLoginGoogle } from "@/service/login";
 import { FormProps } from "@/types/login";
 import { localStorageMixins } from "@/utils/localStorage.mixins";
 import { useRequest } from "ahooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Button from "../components/Button";
+import { useGoogleLogin } from "@react-oauth/google";
+import FeedbackModals from "../components/FeedbackModals";
+import { XCircleIcon } from "@heroicons/react/24/solid";
 
 export default function Login() {
   const router = useRouter();
@@ -14,6 +18,8 @@ export default function Login() {
     password: "",
   });
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
+  const [accessToken, setAccessToken] = useState<any>(null);
+  const [failedModal, setFailedModal] = useState<boolean>(false);
   const { runAsync, error, loading } = useRequest(PostLogin, { manual: true });
   const handleSubmit = () => {
     runAsync(loginForm).then((res) => {
@@ -22,12 +28,53 @@ export default function Login() {
       router.push(`/`);
     });
   };
+
+  const {
+    data: googleRes,
+    runAsync: postLoginGoogle,
+    error: errorGoogle,
+    loading: loadingGoogle,
+  } = useRequest(PostLoginGoogle, { manual: true });
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      onSuccessGoogleLogin(tokenResponse);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+    onNonOAuthError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const onSuccessGoogleLogin = async (googleResponse: any) => {
+    try {
+      // code request to backend
+      const tokenGoogle = googleResponse?.access_token;
+      postLoginGoogle({ token: tokenGoogle })
+        .then((res) => {
+          localStorageMixins.set("access_token", res.result.access_token);
+          localStorageMixins.set("profile", res.result.profile);
+          setAccessToken(res.result.access_token);
+        })
+        .catch((error) => {
+          console.log(error);
+          setFailedModal(true);
+        });
+    } catch (error) {
+      // catch some error
+    }
+  };
+
   useEffect(() => {
-    console.log(error);
-  }, [error]);
+    setAccessToken(localStorageMixins.get("access_token"));
+    // protects when from the dashboard returns to the login page
+    accessToken ? router.push("/") : router.push("/login");
+  }, [accessToken]);
   return (
     <div
-      className={`w-screen h-screen flex items-center justify-center gap-10 bg-white p-4 md:p-40`}
+      className={`w-screen h-screen flex items-center justify-center gap-10 bg-bgPrimary p-4 md:p-40`}
     >
       <div className={`md:w-[50%] hidden md:block`}>
         <Image
@@ -39,7 +86,7 @@ export default function Login() {
         />
       </div>
       <div className={`w-full md:w-[50%]`}>
-        <form
+        {/* <form
           className={`flex flex-col max-w-[500px]`}
           onSubmit={(e) => {
             e.preventDefault();
@@ -125,8 +172,75 @@ export default function Login() {
           >
             Login
           </button>
-        </form>
+        </form> */}
+        <div className={`flex items-center justify-center`}>
+          <Image
+            className={`size-20 `}
+            alt={``}
+            src={`/logo.png`}
+            width={300}
+            height={300}
+          />
+        </div>
+        <div className={`mb-6`}>
+          <h1 className={`text-4xl font-bold text-primaryText  `}>
+            Log in to Djanat Document
+          </h1>
+          <p className={`text-secondaryText mt-3`}>
+            Welcome to Djanat Document Management System. Log in can only be
+            done by using registered Google Email.
+          </p>
+        </div>
+        <Button
+          onClick={() => {
+            googleLogin();
+          }}
+          className={`font-semibold !px-5 py-3 gap-3 rounded-full `}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 326667 333333"
+            shape-rendering="geometricPrecision"
+            text-rendering="geometricPrecision"
+            image-rendering="optimizeQuality"
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            className={`size-6`}
+          >
+            <path
+              d="M326667 170370c0-13704-1112-23704-3518-34074H166667v61851h91851c-1851 15371-11851 38519-34074 54074l-311 2071 49476 38329 3428 342c31481-29074 49630-71852 49630-122593m0 0z"
+              fill="#4285f4"
+            />
+            <path
+              d="M166667 333333c44999 0 82776-14815 110370-40370l-52593-40742c-14074 9815-32963 16667-57777 16667-44074 0-81481-29073-94816-69258l-1954 166-51447 39815-673 1870c27407 54444 83704 91852 148890 91852z"
+              fill="#34a853"
+            />
+            <path
+              d="M71851 199630c-3518-10370-5555-21482-5555-32963 0-11482 2036-22593 5370-32963l-93-2209-52091-40455-1704 811C6482 114444 1 139814 1 166666s6482 52221 17777 74814l54074-41851m0 0z"
+              fill="#fbbc04"
+            />
+            <path
+              d="M166667 64444c31296 0 52406 13519 64444 24816l47037-45926C249260 16482 211666 1 166667 1 101481 1 45185 37408 17777 91852l53889 41853c13520-40185 50927-69260 95001-69260m0 0z"
+              fill="#ea4335"
+            />
+          </svg>
+          Log in with Google Account
+        </Button>
       </div>
+      <FeedbackModals
+        icons={<XCircleIcon className={`size-20 text-warning`} />}
+        title={"Failed to Login"}
+        open={failedModal}
+        onClose={function (): void {
+          setFailedModal(false);
+        }}
+        onAction={function (): void {
+          setFailedModal(false);
+        }}
+        actionText="Try again"
+      >
+        <p className={`text-warning`}>{errorGoogle?.message}</p>
+      </FeedbackModals>
     </div>
   );
 }
