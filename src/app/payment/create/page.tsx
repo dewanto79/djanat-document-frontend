@@ -4,20 +4,16 @@ import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
 import { getStudentPayment, postPayment } from "@/service/payment";
-import { getStudentList, postStudent } from "@/service/student";
+import { EPaymentStatus } from "@/types/payment/getPaymentList";
 import { Month, PostPaymentPayload } from "@/types/payment/postPayment";
 import { GetStudentPaymentResponseProps } from "@/types/payment/student";
-import { PostStudentRequestProps } from "@/types/postStudent";
-import { GetStudentProps, StudentListProps } from "@/types/student";
 import { currencyFormat } from "@/utils";
 import {
   CameraIcon,
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/16/solid";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useDebounce, useRequest } from "ahooks";
-import { error } from "console";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -231,7 +227,6 @@ export default function CreatePayment() {
             </div>
 
             {/* Payment Information */}
-
             <div className={`w-full md:px-6`}>
               <h2 className={`text-lg font-semibold text-center md:text-left `}>
                 Payment Information
@@ -258,7 +253,8 @@ export default function CreatePayment() {
                           key={index}
                           disabled={selectedData?.payments?.some(
                             (rows2: any) =>
-                              rows2.month === rows && rows2.year === Number(form.year)
+                              rows2.month === rows &&
+                              rows2.year === Number(form.year)
                           )}
                           value={rows}
                         >
@@ -301,6 +297,28 @@ export default function CreatePayment() {
                     type={`date`}
                     max={new Date().toISOString().split("T")[0]}
                   />
+                  <div className={`flex flex-col`}>
+                    <label htmlFor={`status`} className={`mb-2`}>
+                      Status
+                    </label>
+                    <select
+                      id={`status`}
+                      onChange={(e) => {
+                        setForm((prev) => ({
+                          ...prev,
+                          status: e.target.value,
+                        }));
+                      }}
+                      className={`px-4 py-3 border border-secondaryText rounded-lg`}
+                      value={form.status}
+                    >
+                      {Object.values(EPaymentStatus).map((rows, index) => (
+                        <option key={index} value={rows}>
+                          {rows}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               ) : (
                 <p className={`mt-6 text-center text-secondaryText`}>

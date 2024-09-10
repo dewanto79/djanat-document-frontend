@@ -1,8 +1,8 @@
 import { Month } from "./postPayment";
 
 export enum EPaymentStatus {
-  TRANSFER = "TRANSFER",
   PAID = "PAID",
+  TRANSFER = "TRANSFER",
 }
 
 export interface GetPaymentParams {
