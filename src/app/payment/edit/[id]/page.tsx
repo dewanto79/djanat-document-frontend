@@ -234,11 +234,11 @@ export default function EditPayment({ params }: { params: { id: string } }) {
                     value={form.paidDate}
                   />
                   <div className={`flex flex-col`}>
-                    <label htmlFor={`month`} className={`mb-2`}>
+                    <label htmlFor={`status`} className={`mb-2`}>
                       Status
                     </label>
                     <select
-                      id={`month`}
+                      id={`status`}
                       onChange={(e) => {
                         setForm((prev) => ({
                           ...prev,
