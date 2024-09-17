@@ -4,8 +4,9 @@ import Button from "@/app/components/Button";
 import FeedbackModals from "@/app/components/FeedbackModals";
 import Input from "@/app/components/Input";
 import { getStudentPayment, postPayment } from "@/service/payment";
+import { Month } from "@/types/month.enum";
 import { EPaymentStatus } from "@/types/payment/getPaymentList";
-import { Month, PostPaymentPayload } from "@/types/payment/postPayment";
+import { PostPaymentPayload } from "@/types/payment/postPayment";
 import { GetStudentPaymentResponseProps } from "@/types/payment/student";
 import { currencyFormat } from "@/utils";
 import {

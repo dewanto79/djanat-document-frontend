@@ -1,4 +1,4 @@
-import { Month } from "./postPayment";
+import { Month } from "../month.enum";
 
 export enum EPaymentStatus {
   PAID = "PAID",
@@ -32,6 +32,7 @@ export interface PaymentListProps {
   status: EPaymentStatus;
   studentId: string;
   createdBy: string;
+  sendNotification: boolean;
   student: Student;
 }
 
