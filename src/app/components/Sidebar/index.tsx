@@ -12,7 +12,7 @@ import {
   HomeIcon,
   UserIcon,
 } from "@heroicons/react/16/solid";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { CreditCardIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -52,6 +52,12 @@ export default function Sidebar({ children, className }: SideBarProps) {
           className={` size-6 ${path === "/payment" && `text-primary`}`}
         />
       ),
+    },
+    {
+      level: 0,
+      name: "Expense",
+      url: "/expense",
+      icon: <CreditCardIcon className={`size-6`} />,
     },
   ];
 

@@ -9,26 +9,19 @@ import {
   patchPayment,
   postPayment,
 } from "@/service/payment";
-import { getStudentList, postStudent } from "@/service/student";
 import { EPaymentStatus } from "@/types/payment/getPaymentList";
-import { Month, PostPaymentPayload } from "@/types/payment/postPayment";
+import { Month } from "@/types/month.enum";
 import { GetStudentPaymentResponseProps } from "@/types/payment/student";
-import { PostStudentRequestProps } from "@/types/postStudent";
-import { GetStudentProps, StudentListProps } from "@/types/student";
 import { currencyFormat } from "@/utils";
-import {
-  CameraIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-} from "@heroicons/react/16/solid";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
 import { useDebounce, useRequest } from "ahooks";
-import { error } from "console";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PatchPaymentPayload } from "@/types/payment/patchPayment";
 
 export default function EditPayment({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [form, setForm] = useState<PostPaymentPayload>({
+  const [form, setForm] = useState<PatchPaymentPayload>({
     amount: 0,
     month: "",
     year: "2024",

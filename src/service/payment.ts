@@ -41,3 +41,9 @@ export const getPaymentDetail = (
 export const deletePayment = (id: string): Promise<any> => {
   return apiClient.delete(`/apis/payment/${id}`);
 };
+
+export const sendNotificationPayment = (
+  id: string,
+): Promise<any> => {
+  return apiClient.post(`/apis/payment/notification/${id}`);
+};
