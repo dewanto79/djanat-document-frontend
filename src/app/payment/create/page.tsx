@@ -28,7 +28,7 @@ export default function CreatePayment() {
   const [form, setForm] = useState<PostPaymentPayload>({
     amount: 0,
     month: "",
-    year: "2024",
+    year: `${new Date().getFullYear()}`,
     paidDate: "",
     status: "PAID",
     studentId: "",
@@ -271,7 +271,7 @@ export default function CreatePayment() {
                     onChange={(e) => {
                       setForm((prev) => ({ ...prev, year: e.target.value }));
                     }}
-                    placeholder={`2024`}
+                    placeholder={`${new Date().getFullYear()}`}
                     label={`Year`}
                     type={`number`}
                     value={form.year}

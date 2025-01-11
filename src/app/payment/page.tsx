@@ -40,11 +40,11 @@ import { Month } from "@/types/month.enum";
 
 export default function Payment() {
   const [filter, setFilter] = useState<GetPaymentParams>({
-    keyword: "",
-    status: "",
-    month: "",
-    year: 2024,
-    limit: 10,
+    keyword: undefined,
+    status: undefined,
+    month: undefined,
+    year: undefined,
+    limit: 30,
     page: 1,
   });
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
@@ -362,7 +362,7 @@ export default function Payment() {
                     <td className="px-6 py-4">{rows.paidDate.toString()}</td>
                     <td className="px-6 py-4">
                       <div
-                        className={`bg-green-200 text-green-700 text-center px-3 py-1 rounded-full w-fit`}
+                        className={`${rows.status == EPaymentStatus.PAID ? 'bg-green-200 text-green-700' : 'bg-cyan-200 text-cyan-600'} text-center px-3 py-1 rounded-full w-fit`}
                       >
                         {rows.status}
                       </div>
