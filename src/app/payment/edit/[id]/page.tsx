@@ -24,9 +24,9 @@ export default function EditPayment({ params }: { params: { id: string } }) {
   const [form, setForm] = useState<PatchPaymentPayload>({
     amount: 0,
     month: "",
-    year: "2024",
+    year: "",
     paidDate: "",
-    status: "PAID",
+    status: "",
     studentId: "",
   });
 
@@ -198,7 +198,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
                     onChange={(e) => {
                       setForm((prev) => ({ ...prev, year: e.target.value }));
                     }}
-                    placeholder={`2024`}
+                    placeholder={`${new Date().getFullYear()}`}
                     label={`Year`}
                     type={`number`}
                     value={form.year}
@@ -263,7 +263,7 @@ export default function EditPayment({ params }: { params: { id: string } }) {
               type={`submit`}
               disabled={loading}
             >
-              Add Payment
+              Edit Payment
             </Button>
           </div>
         </form>

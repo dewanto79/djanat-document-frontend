@@ -19,7 +19,7 @@ export default function CreateStudent() {
     description: "",
     amount: 0,
     month: "",
-    year: 2024,
+    year: new Date().getFullYear(),
     expenseDate: "",
   });
 

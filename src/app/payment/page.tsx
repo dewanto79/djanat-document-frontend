@@ -43,8 +43,8 @@ export default function Payment() {
     keyword: "",
     status: "",
     month: "",
-    year: 2024,
-    limit: 10,
+    year: "",
+    limit: 30,
     page: 1,
   });
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);

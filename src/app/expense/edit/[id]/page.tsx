@@ -19,7 +19,7 @@ export default function EditExpense({ params }: { params: { id: string } }) {
     description: "",
     amount: 0,
     month: "",
-    year: 2024,
+    year: `${new Date().getFullYear()}`,
     expenseDate: "",
   });
 
